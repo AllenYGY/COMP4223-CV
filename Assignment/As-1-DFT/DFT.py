@@ -149,7 +149,7 @@ def process_image(image, block_size):
 
 if __name__ == "__main__":
     # Load the grayscale image 
-    img_path = "wmh.jpg"  # Replace with the actual path to the image
+    img_path = "lena.jpg"  # Replace with the actual path to the image
     image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
     image = cv2.resize(image, (256,256))
     
