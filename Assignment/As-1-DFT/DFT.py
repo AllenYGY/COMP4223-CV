@@ -132,7 +132,14 @@ def process_image(image, block_size):
         dft_blocks.append(dft_result)
     
     dft_result = merge_blocks(dft_blocks, (M, N), block_size)
-    amplitude, phase = compute_amplitude_phase(dft_result)
+
+    # Compute the amplitude and phase of the DFT blocks
+    amplitude_blocks = []
+    phases_blocks = []
+    for block in dft_blocks:
+        amplitude, phase = compute_amplitude_phase(block)
+        amplitude_blocks.append(amplitude)
+        phases_blocks.append(phase)
     
     # Reconstruct the image from the DFT blocks   
     global idft_kernel
@@ -144,43 +151,93 @@ def process_image(image, block_size):
     
     reconstructed_image = merge_blocks(idft_blocks, (M, N), block_size)
     real_part_matrix = [[z.real for z in row] for row in reconstructed_image]
+    dft_result = [[z.real for z in row] for row in dft_result]
 
-    return real_part_matrix, amplitude, phase
+    return real_part_matrix, amplitude_blocks, phases_blocks, dft_blocks
 
-if __name__ == "__main__":
+def draw_blocks(blocks, grid_size=(16, 16), block_size=8, title=""):
+    """
+    Draws each block as an individual subplot arranged in a grid.
+    
+    Parameters:
+        blocks (list of 2D lists): The list of blocks to display.
+        grid_size (tuple): The dimensions of the grid (rows, cols).
+        block_size (int): The size of each block.
+        title (str): Title for the entire plot.
+    """
+    rows, cols = grid_size
+    fig, axs = plt.subplots(rows, cols, figsize=(16, 16))
+    fig.suptitle(title, fontsize=16)
+    
+    block_index = 0
+    for i in range(rows):
+        for j in range(cols):
+            # Convert block to numpy array for plotting
+            block = np.array(blocks[block_index])
+            
+            # Plot the block in the corresponding subplot
+            axs[i, j].imshow(block, cmap='gray')
+            axs[i, j].axis('off')  # Turn off axis
+            
+            block_index += 1
+    
+    plt.tight_layout()
+    plt.subplots_adjust(top=0.95)  # Adjust for title
+    plt.show()
+
+def show_image(img_path):
     # Load the grayscale image 
-    img_path = "lena.jpg"  # Replace with the actual path to the image
+    # img_path = "lena.jpg"  # Replace with the actual path to the image
     image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-    image = cv2.resize(image, (256,256))
+    image = cv2.resize(image, (128,128))
     
     # Convert the image to a 2D list
     image_list = image.tolist()
     
     # Process the image using DFT and IDFT
     block_size = 8  # Block size for DFT
-    reconstructed_image,amplitude_map, phase_map = process_image(image_list, block_size)
+    reconstructed_image,amplitude_blocks, phase_blocks,dft_blocks= process_image(image_list, block_size)
     
-    # Display the original image
-    plt.figure(figsize=(128, 128))
-    plt.subplot(2, 2, 1)
+    plt.figure(figsize=(15, 10))
+
+    # Original Image
+    plt.subplot(2, 3, 1)
     plt.title('Original Image')
     plt.imshow(image, cmap='gray')
     
-    # Convert reconstructed image back to NumPy array and display
-    #reconstructed_image_np = cv2.convertScaleAbs(cv2.merge([cv2.Mat(reconstructed_image)]))
-    reconstructed_image_np = np.array(reconstructed_image)
-    amplitude_map = np.array(amplitude_map)
-    phase_map = np.array(phase_map)
-    
-    plt.subplot(2, 2, 2)
+    # Reconstructed Image
+    plt.subplot(2, 3, 2)
     plt.title('Reconstructed Image')
+    reconstructed_image_np = np.array(reconstructed_image)
     plt.imshow(reconstructed_image_np, cmap='gray')
 
-    plt.subplot(2, 2, 3)
-    plt.title('Amplitude Map')
-    plt.imshow(amplitude_map, cmap='gray')
+    # Amplitude Map
+    # plt.subplot(2, 3, 4)
+    # plt.title('Amplitude Map')
+    # amplitude_map = np.array(amplitude_map)
+    # plt.imshow(amplitude_map, cmap='gray')
 
-    plt.subplot(2, 2, 4)
-    plt.title('Phase Map')
-    plt.imshow(phase_map, cmap='gray')
+    # Phase Map
+    # plt.subplot(2, 3, 5)
+    # plt.title('Phase Map')
+    # phase_map = np.array(phase_map)
+    # plt.imshow(phase_map, cmap='gray')
+
+    # DFT Image
+    # plt.subplot(2, 3, 6)
+    # plt.title('DFT Result')
+    # dft_map = np.array(dft_map)  # Ensure dft_map is an array
+    # plt.imshow(dft_map, cmap='gray')
+
+     # Draw amplitude and phase blocks arranged in 16x16 grid
+    draw_blocks(amplitude_blocks, grid_size=(16, 16), block_size=block_size, title="Amplitude Blocks")
+    draw_blocks(phase_blocks, grid_size=(16, 16), block_size=block_size, title="Phase Blocks")
+    draw_blocks(dft_blocks, grid_size=(16, 16), block_size=block_size, title="DFT Blocks")
+
+    # Show all images
+    plt.tight_layout()
     plt.show()
+
+if __name__ == "__main__":
+    show_image("lena.jpg")
+    show_image("cartoon.png")
