@@ -1,7 +1,7 @@
 ---
 Create Time: 2nd November 2024
-Title: "CV-As-2"
-status: UNFINISHED
+Title: CV-As-2
+status: DONE
 Author:
   - AllenYGY
 tags:
@@ -9,7 +9,7 @@ tags:
   - CV
   - CNN
   - VGG
-  - ResNet  
+  - ResNet
 ---
 
 # Lab Report: Digit Classification Using Deep Learning Architectures
@@ -251,6 +251,10 @@ Both VGG-16 and ResNet-18 performed well on the digit classification task, achie
 
 In summary, **VGG-16** is advantageous when simplicity and interpretability are key, while **ResNet-18** offers efficiency and scalability, especially useful in resource-constrained environments or for more complex tasks.
 
+### Training Results Visualization
+
+![Visualization](https://cdn.jsdelivr.net/gh/AllenYGY/ImageSpace@main/uPic/00ftRr.png)
+
 ## Comparison of VGG-16 and ResNet-18
 
 | Feature                    | VGG-16                                     | ResNet-18                                        |
@@ -280,7 +284,7 @@ Xavier Initialization is designed to maintain the variance of activations across
 $$
 W \sim \mathcal{U} \left(-\sqrt{\frac{6}{\text{fan\_in} + \text{fan\_out}}}, \sqrt{\frac{6}{\text{fan\_in} + \text{fan\_out}}}\right)
 $$
-where \(\text{fan\_in}\) is the number of input units, and \(\text{fan\_out}\) is the number of output units for the layer.
+where $\text{fan\_in}$ is the number of input units, and $\text{fan\_out}$ is the number of output units for the layer.
 
 **Usage**: Applied to models where activation functions like tanh or sigmoid are used. It helps maintain the activation variance, avoiding issues with vanishing or exploding gradients.
 
@@ -293,7 +297,7 @@ Kaiming Initialization is tailored for layers with **ReLU** activations. It adju
 $$
 W \sim \mathcal{N} \left(0, \frac{2}{\text{fan\_in}}\right)
 $$
-where \(\text{fan\_in}\) is the number of input units.
+where $\text{fan\_in}$ is the number of input units.
 
 **Usage**: Commonly used in CNNs with ReLU layers, such as VGG and ResNet models. It preserves the variance of gradients, which helps maintain effective backpropagation in deep networks.
 
