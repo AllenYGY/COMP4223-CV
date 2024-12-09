@@ -4,3 +4,7 @@
 *.tar
 *.pkl
 *.csv
+dataset/*
+*.zip
+*.tif
+*.pth
