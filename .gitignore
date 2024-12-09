@@ -8,3 +8,4 @@ dataset/*
 *.zip
 *.tif
 *.pth
+Assignment/As-3-ObjectDetection/output/*
