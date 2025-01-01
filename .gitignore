@@ -9,3 +9,4 @@ dataset/*
 *.tif
 *.pth
 Assignment/As-3-ObjectDetection/output/*
+mip-splatting/
